@@ -1,2 +1,2 @@
 # SWMISP
-SWM ISP Demo
+Synwit MCU ISP Demo
