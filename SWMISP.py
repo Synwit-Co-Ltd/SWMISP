@@ -295,11 +295,32 @@ class SWMISP(QWidget):
         self.btnCheck.setEnabled(True)
         self.btnErase.setEnabled(True)
 
+        self.set_target_reset(0)
+        self.set_target_boot(0)
+        time.sleep(0.1)
+        self.set_target_reset(1)
+        time.sleep(0.1)
+
+    ''' CH343 RTS 接目标芯片 RESET 引脚
+        CH343 BUG：必须写一下 DTR 引脚，RTS 引脚设置才能生效
+    '''
+    def set_target_reset(self, level: int):
+        self.ser.rts = True if level == 0 else False
+        self.ser.dtr = self.ser.dtr
+
+    ''' CH343 DTR 接目标芯片 BOOT 引脚
+    '''
+    def set_target_boot(self, level: int):
+        self.ser.dtr = True if level == 0 else False
+
     def syncTarget(self):
-        self.ser.dtr = 1    # 接目标芯片 BOOT 引脚
-        self.ser.rts = 0    # 接目标芯片 RESET 引脚
+        self.set_target_reset(0)
+        self.set_target_boot(1)
+        time.sleep(0.1)
+        self.set_target_reset(1)
+        time.sleep(0.1)
+
         self.Timeout = time.time() + 1
-        QtCore.QTimer.singleShot(10, lambda: self.ser.setRTS(1))
         QtCore.QTimer.singleShot(50, lambda: self.ser.write(b'sync\r\n'))
 
     @pyqtSlot()
