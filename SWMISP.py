@@ -28,7 +28,7 @@ class SWMISP(QWidget):
         super(SWMISP, self).__init__(parent)
         
         uic.loadUi('SWMISP.ui', self)
-        self.setWindowTitle(f'{self.windowTitle()} {"v1.1"}')
+        self.setWindowTitle(f'{self.windowTitle()} {"v1.2"}')
 
         for port, desc, hwid in comports():
             self.cmbPort.addItem(f'{port} ({desc})')
@@ -119,9 +119,10 @@ class SWMISP(QWidget):
                         if self.NowCmd == 'sync' and resp == 'sync':
                             resp = 'OK'
 
-                        elif self.NowCmd == 'version' and re.match(r'M\d{3}V\d{2}A', resp):
+                        elif self.NowCmd == 'version' and re.match(r'M\d{3}V\d{2}[A-Z]', resp):
                             self.txtStat.append(f'{resp}\n')
 
+                            self.targetName = resp
                             self.targetInfo(resp[1:4])
 
                             if self.Oper == 'write':
@@ -146,7 +147,17 @@ class SWMISP(QWidget):
 
                             elif self.NowCmd == 'version':
                                 if self.Oper == 'write':
-                                    self.ser.write(b'baudrate %06d\r\n' %int(self.cmbBaud.currentText()))
+                                    baudrate = int(self.cmbBaud.currentText())
+                                    if self.targetName.startswith('M320'):
+                                        baudrate = int(20_000_000     / 16 / baudrate + 0.5)
+                                    elif self.targetName.startswith('M181'):
+                                        baudrate = int(24_000_000     / 16 / baudrate + 0.5)
+                                    elif self.targetName.startswith('M190'):
+                                        baudrate = int(24_000_000          / baudrate + 0.5)
+                                    elif self.targetName.startswith('M260'):
+                                        baudrate = int(24_000_000 / 2 / 16 / baudrate + 0.5)
+
+                                    self.ser.write(b'baudrate %06d\r\n' %baudrate)
                                     self.NowCmd = 'baudrate'
 
                                 elif self.Oper == 'erase':
