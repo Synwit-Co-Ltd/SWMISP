@@ -156,6 +156,8 @@ class SWMISP(QWidget):
                                         baudrate = int(24_000_000          / baudrate + 0.5)
                                     elif self.targetName.startswith('M260'):
                                         baudrate = int(24_000_000 / 2 / 16 / baudrate + 0.5)
+                                    elif self.targetName.startswith('M241'):
+                                        baudrate = int(48_000_000          / baudrate + 0.5)
 
                                     self.ser.write(b'baudrate %06d\r\n' %baudrate)
                                     self.NowCmd = 'baudrate'
