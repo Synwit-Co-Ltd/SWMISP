@@ -132,7 +132,7 @@ class SWMISP(QWidget):
 
                         elif self.NowCmd == 'checksum' and re.match(r'0x[\dABCDEF]{8}', resp):
                             if self.binSum.lower() == resp.lower():
-                                self.txtStat.append(f'校验正确！\n\n')
+                                self.txtStat.append(f'校验正确：读出的校验和（{resp}）== 文件的校验和（{self.binSum}）！\n\n')
                             else:
                                 self.txtStat.append(f'校验错误：读出的校验和（{resp}）!= 文件的校验和（{self.binSum}）！\n\n')
 
@@ -382,7 +382,8 @@ class SWMISP(QWidget):
         self.PAGE_SIZE = 256
 
     def uu_encode(self):
-        self.binCode += b'\xFF' * (self.PAGE_SIZE - self.binSize % self.PAGE_SIZE)
+        if self.binSize % self.PAGE_SIZE:
+            self.binCode += b'\xFF' * (self.PAGE_SIZE - self.binSize % self.PAGE_SIZE)
 
         self.TotalSect = (self.binSize + (self.SECT_SIZE - 1)) // self.SECT_SIZE   # 需要擦除的扇区数
         self.TotalPage = len(self.binCode) // self.PAGE_SIZE
