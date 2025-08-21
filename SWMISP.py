@@ -28,7 +28,7 @@ class SWMISP(QWidget):
         super(SWMISP, self).__init__(parent)
         
         uic.loadUi('SWMISP.ui', self)
-        self.setWindowTitle(f'{self.windowTitle()} {"v1.2"}')
+        self.setWindowTitle(f'{self.windowTitle()} {"v1.3"}')
 
         for port, desc, hwid in comports():
             self.cmbPort.addItem(f'{port} ({desc})')
