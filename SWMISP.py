@@ -28,7 +28,7 @@ class SWMISP(QWidget):
         super(SWMISP, self).__init__(parent)
         
         uic.loadUi('SWMISP.ui', self)
-        self.setWindowTitle(f'{self.windowTitle()} {"v1.3"}')
+        self.setWindowTitle(f'{self.windowTitle()} {"v1.3.1"}')
 
         for port, desc, hwid in comports():
             self.cmbPort.addItem(f'{port} ({desc})')
@@ -132,7 +132,7 @@ class SWMISP(QWidget):
 
                         elif self.NowCmd == 'checksum' and re.match(r'0x[\dABCDEF]{8}', resp):
                             if self.binSum.lower() == resp.lower():
-                                self.txtStat.append(f'校验正确：读出的校验和（{resp}）== 文件的校验和（{self.binSum}）！\n\n')
+                                self.txtStat.append(f'校验正确！\n\n')
                             else:
                                 self.txtStat.append(f'校验错误：读出的校验和（{resp}）!= 文件的校验和（{self.binSum}）！\n\n')
 
