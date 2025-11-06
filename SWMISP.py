@@ -373,10 +373,14 @@ class SWMISP(QWidget):
         elif name in ('260', ):
             self.SECT_SIZE = 2048
 
-        elif name in ('220', '211'):
+        elif name in ('211', '166', '241', '330', '350'):
             self.SECT_SIZE = 1024
 
+        elif name in ('201', '221', '261', '231', '280'):
+            self.SECT_SIZE = 512
+
         else:
+            QMessageBox.critical(self, 'Unsupported chip name', f'SWM{name} cannot be recognized', QMessageBox.Ok)
             self.SECT_SIZE = 512
 
         self.PAGE_SIZE = 256
